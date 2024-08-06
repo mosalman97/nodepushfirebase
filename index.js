@@ -9,7 +9,6 @@ dotenv.config();
 
 app.use(express.json())
 
-console.log(process.env.FIREBASE_UNIVERSE_DOMAIN,"++")
 
 // middlewares
 app.use(bodyParser.urlencoded({
@@ -35,7 +34,6 @@ initializeApp({
   }),
   projectId: "qai-tanara"
 })
-
 
 
 app.post("/send", (req, res) => {
