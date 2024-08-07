@@ -1,6 +1,6 @@
 import { initializeApp, cert} from "firebase-admin/app";
 import { getMessaging } from "firebase-admin/messaging";
-import express, { json, response } from "express"
+import express from "express"
 import bodyParser from "body-parser";
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -8,7 +8,6 @@ const app = express()
 dotenv.config();
 
 app.use(express.json())
-
 
 // middlewares
 app.use(bodyParser.urlencoded({
@@ -32,27 +31,35 @@ initializeApp({
     client_x509_cert_url:process.env.FIREBASE_CLIENT_X509_CERT_URL,
     universe_domain:process.env.FIREBASE_UNIVERSE_DOMAIN 
   }),
-  projectId: "qai-tanara"
+  projectId:process.env.PROJECT_ID
 })
 
 
 app.post("/send", (req, res) => {
-  const {fcmtoken,notification}= req.body
+  const {fcmtoken,notification,data}= req.body
   const message = {
     notification:notification,
-    token:fcmtoken
+    token:fcmtoken,
+    data:data
   };
   getMessaging().send(message)
     .then((_reponse) => {
       console.log("Successfully sent message")
       res.json({
         statuscode: 200,
-        message: "message sending sucess"
+        message: "message sending sucessfully"
       })
     })
     .catch((error) => {
       console.log('Error sending message:', error);
     });
+})
+
+app.get("/",(res,req)=>{
+   res.json({
+     statuscode:200,
+     message:"connection ok"
+   })
 })
 
 app.listen(5000, () => {
