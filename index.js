@@ -55,7 +55,7 @@ app.post("/send", (req, res) => {
     });
 })
 
-app.get("/",(res,req)=>{
+app.get("/",(req,res)=>{
    res.json({
      statuscode:200,
      message:"connection ok"
