@@ -36,24 +36,53 @@ initializeApp({
 
 
 app.post("/send", (req, res) => {
-  const {fcmtoken,notification,data}= req.body
+  const { fcmtoken, notification, data } = req.body;
+  console.log(fcmtoken, notification, data);
+
+  if (!fcmtoken) {
+    return res.json({
+      statuscode: "400",
+      message: "fcm token is missing"
+    });
+  }
+
+  if (!notification) {
+    return res.json({
+      statuscode: "400",
+      message: "notification is missing"
+    });
+  }
+
+  if (!data) {
+    return res.json({
+      statuscode: "400",
+      message: "data is missing"
+    });
+  }
+
   const message = {
-    notification:notification,
-    token:fcmtoken,
-    data:data
+    notification: notification,
+    tokens: fcmtoken,
+    data: data
   };
-  getMessaging().send(message)
-    .then((_reponse) => {
-      console.log("Successfully sent message")
+
+  getMessaging().sendEachForMulticast(message)
+    .then((_response) => {
+      console.log("Successfully sent message");
       res.json({
         statuscode: 200,
-        message: "message sending sucessfully"
-      })
+        message: "message sent successfully"
+      });
     })
     .catch((error) => {
       console.log('Error sending message:', error);
+      res.status(500).json({
+        statuscode: "500",
+        message: "Error sending message"
+      });
     });
-})
+});
+
 
 app.get("/",(req,res)=>{
    res.json({
